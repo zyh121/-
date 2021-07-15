@@ -10,7 +10,7 @@ class LoginWindow(Tk):
     创建登录窗体的GUI界面以及登录的方法
     """
     def __init__(self):
-        super.__init__() # 执行tk这个类的初始化
+        super().__init__() # 执行tk这个类的初始化
         self.title("书阁")
         self.geometry("300x310+500+300")
         self.resizable(0,0)
@@ -147,4 +147,5 @@ class LoginWindow(Tk):
         today = datetime.today()
         return ("%04d-%02d-%02d %02d:%02d:%02d" %(today.year,today.month,today.day,today.hour,today.minute,today.second))
 
-
+if __name__ == "__main__":
+    win = LoginWindow()
