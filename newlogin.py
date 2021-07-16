@@ -105,7 +105,7 @@ class LoginWindow(Tk):
                     if self.password_error_times >= 3:
                         showinfo("系统消息","密码错误已达三次！")
                         # 改变状态
-                        self.user_list[index][2] = "0\n"
+                        self.user_list[index][2] = "0\n" #注意！此处必须是\0而不能是0
                     
                         # 写入文件
                         self.write_file_info()
@@ -142,10 +142,6 @@ class LoginWindow(Tk):
         self.destory() 
         # 加载新的窗体
         main_window = mainwin.MainWindow(self.current_user_list,self.get_now_time())
-    
-    def get_now_time(self):
-        today = datetime.today()
-        return ("%04d-%02d-%02d %02d:%02d:%02d" %(today.year,today.month,today.day,today.hour,today.minute,today.second))
 
 
 if __name__ == "__main__":
