@@ -3,8 +3,7 @@ import json
 from tkinter import *
 from tkinter.messagebox import *
 from tkinter.ttk import *
-
-from PIL import Image, ImageTk
+import random
 
 import Suibi
 import Judou
@@ -16,8 +15,10 @@ class MainWindow(Tk):
         self.title("书阁二楼")
         self.geometry("615x510+370+100")
         self.resizable(0,0)
+        self.iconbitmap('D:\\Npy\\Booktest\\favicon.ico')
         #全局变量
         self.Bookname = {}
+        self.judou = list()
         #自动加载文件
         self.inspect_file()
         self.load_files()
@@ -32,14 +33,15 @@ class MainWindow(Tk):
         if not os.path.exists("D:\\BookAttic\\Bookname.json"):
             showinfo("⚠提示","书籍信息被改动或删除！")
 
-    #加载信息至self.Bookname
+    #加载所需信息
     def load_files(self):
         try:
             with open ("D:\\BookAttic\\Bookname.json",mode="r",encoding='UTF-8') as fd:
-                self.Bookname=json.load(fd)
+                self.Bookname = json.load(fd)
+            with open ("D:\\BookAttic\\Judou.json",mode="r",encoding='UTF-8') as fd:
+                self.judou = json.load(fd)
         except:
-            showinfo("系统消息","文件读取出现异常")
-
+            showinfo("系统消息","文件读取出现异常!")
 
     #构建主界面GUI
     def setup_GUI(self):
@@ -84,33 +86,40 @@ class MainWindow(Tk):
         self.rmbtn = Button(text="删除", command=self.removeItem, width=16)
         self.rmbtn.grid(row=2, column=2, padx=5, pady=3)
 
-
         self.yscrollbar = Scrollbar(orient=VERTICAL, command=self.on_scroll)
         self.yscrollbar.grid(row=1, column=5, sticky=S + W + E + N)
         self.yscrollbar.config(command=self.tree.yview)
         self.tree.configure(yscrollcommand=self.yscrollbar.set)
 
-        # 插入分隔图片
-        self.image = Image.open("D:\Python\PYTHON\My Programe\image.jpg")
-        self.flowerpic = ImageTk.PhotoImage(self.image)
-        self.labelf = Label(image=self.flowerpic)
-        self.labelf.grid(row=3, column=0, columnspan=6)
+        # 插入句读框(每隔两分钟更新一次)
+        self.digit = Label(cursor="heart",background="LemonChiffon",anchor=CENTER,font=14,wraplength=360)
+        self.Random_Judou()
+        self.digit.grid(row=3, column=0, columnspan=6,sticky=N+W+S+E,padx=20)
         # 下部分增加按钮
         self.btnadd = Button(text="增  加\n分  类",command=self.add_class_GUI,)
         self.btnadd.grid(row=4, column=1,padx=5,pady=30,)
         self.btnMclass = Button(text="转  移\n分  类",command=self.moveToclass_GUI)
         self.btnMclass.grid(row=4,column=2,pady=30,)
-        self.btnset = Button(text="句\n读")
+        self.btnset = Button(text="句\n读",command=self.load_Judou)
         self.btnset.grid(row=4, column=3, pady=30,)
-        self.btnpen = Button(text="记  录\n随  笔")
+        self.btnpen = Button(text="记  录\n随  笔",command=self.load_Suibi)
         self.btnpen.grid(row=4, column=4, pady=30,)
+
+    #随机抽取一个已有的句读并显示
+    def Random_Judou(self):
+        count = len(self.judou)
+        if count == 1:
+            self.digit.config(text="添加的句读将会在此显示")
+        elif count >= 2:
+            num = random.randint(0,count-1)
+            key = str(self.judou[num].keys())[12:-5]
+            self.digit.config(text=key)
 
     #实现数据的保存
     def save(self):
         try:
             with open("D:\\BookAttic\\Bookname.json",'w',encoding='UTF-8') as f:
                 json.dump(self.Bookname, f, ensure_ascii=False)
-            showinfo("⊙ω⊙","保存成功！")
         except:
             showinfo("呜呜呜","储存信息时出错！")
 
@@ -184,7 +193,7 @@ class MainWindow(Tk):
                 #更新界面
                 self.tree.item(self.tree.selection(),values=item_text) 
         #保存self.Bookname文件
-        
+        self.save()
         self.exit_tl()
 
     #使备注窗口的X失效
@@ -210,7 +219,8 @@ class MainWindow(Tk):
             self.Bookname[""] = [{self.name:self.tip}]
             self.class_item.append("")
         self.nameEntry.delete(0, END) 
-        self.tipEntry.delete(0, END) 
+        self.tipEntry.delete(0, END)
+        self.save()
 
     # 建立滑动条
     def on_scroll(self,*args):  # 防止滚动条弹回顶部
@@ -257,6 +267,7 @@ class MainWindow(Tk):
         self.Bookname[getword] = []
         self.class_item.append(getword)
         self.class_index[getword] = newindex
+        self.save()
         self.exit_ad()
 
     #构建移动分类GUI
@@ -298,6 +309,17 @@ class MainWindow(Tk):
             self.tree.delete(self.tree.selection())
             self.Bookname[self.nowclass].remove({self.item_key:self.final_tip})
             self.tree.insert(self.class_index[self.mv_class],index=END,text=self.item_key,values=self.final_tip)
+            self.save()
+
+    #跳转至随笔功能
+    def load_Suibi(self):
+        self.save()
+        self.Suibi = Suibi.WriteWindow()
+
+    #跳转至句读功能
+    def load_Judou(self):
+        self.save()
+        self.judou = Judou.JudouWindow()
 
 if __name__ == "__main__":
     A = MainWindow()
