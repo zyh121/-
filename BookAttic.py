@@ -83,7 +83,7 @@ class LoginWindow(Tk):
         # 插入标题与图片的分割线
         self.sep = Separator(self, orient=HORIZONTAL)
         self.sep.grid(row=1, column=1, columnspan=3, sticky=W + E, pady=5)
-        # 插入图片(提示：把图片和.py文件放在 同一个文件夹中才能显示)
+        # 插入图片
         self.bkgif = PhotoImage(file="D:\Python\PYTHON\My Programe\pic.gif")
         self.label = Label(self, image=self.bkgif)
         self.label.grid(row=2, column=1, columnspan=2, pady=5)
@@ -105,13 +105,13 @@ class LoginWindow(Tk):
         self.newpwdL = Label(self.au, text="新密码:",font="楷体 15 bold")
         self.newpwdL.grid(row=2,column=0,sticky=W,padx=5,pady=5)
         self.var_newpwd = StringVar()
-        self.newpwdE = Entry(self.au,textvariable = self.var_newpwd,width=25)
+        self.newpwdE = Entry(self.au,textvariable = self.var_newpwd,width=25,show="●")
         self.newpwdE.grid(row=3,column=0,sticky=W,padx=5)
         #确认密码
         self.againpwdL = Label(self.au,text="请再次输入密码:",font="楷体 15 bold")
         self.againpwdL.grid(row=4,column=0,sticky=W,padx=5,pady=5)
         self.var_againpwd = StringVar()
-        self.againpwdE = Entry(self.au,textvariable=self.var_againpwd,width=25)
+        self.againpwdE = Entry(self.au,textvariable=self.var_againpwd,width=25,show="●")
         self.againpwdE.grid(row=5,column=0,sticky=W,padx=5)
         #确定
         self.okbtn = Button(self.au,text="确 定",command=self.AddUser)
