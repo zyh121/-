@@ -54,7 +54,7 @@ class WriteWindow(Tk):
 
     #分割出三个功能区域
     def Suibi_GUI(self):
-        self.pw = PanedWindow(orient=HORIZONTAL,height=700,width=1190)
+        self.pw = PanedWindow(self,orient=HORIZONTAL,height=700,width=1190)
         self.ClassF = LabelFrame(self.pw,text="选择书籍",width=240,height=690)
         self.pw.add(self.ClassF,weight=1)
         self.ChapterF = LabelFrame(self.pw,text="选择章节",width=230)
