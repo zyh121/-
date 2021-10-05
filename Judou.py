@@ -5,13 +5,13 @@ from tkinter import *
 from tkinter.messagebox import *
 from tkinter.ttk import *
 
-class JudouWindow(Tk):
+class JudouWindow(Toplevel):
 
     def __init__(self):
         super().__init__()
         self.title("句读")
         self.resizable(0,0)
-        self.geometry("750x415+370+100")
+        self.geometry("710x400+370+100")
         self.iconbitmap('D:\\Npy\\Booktest\\favicon.ico')
         #全局变量
         self.judou = list()
@@ -30,21 +30,21 @@ class JudouWindow(Tk):
 
     def Judou_GUI(self):
         #左部分
-        self.ju = Label(text="句:",font="楷体 20 bold")
+        self.ju = Label(self,text="句:",font="楷体 20 bold")
         self.ju.grid(row=0,column=0,sticky=W,pady=2,padx=5)
-        self.ju_text = Text(height=10,font="14")
+        self.ju_text = Text(self,height=10,)
         self.ju_text.grid(row=1,sticky=N+S+W+E,padx=5)
-        self.dou = Label(text="读:",font="楷体 20 bold")
+        self.dou = Label(self,text="读:",font="楷体 20 bold")
         self.dou.grid(row=2,sticky=W,pady=2,padx=5)
-        self.dou_text = Text(height=10,font="14")
+        self.dou_text = Text(self,height=10,)
         self.dou_text.grid(row=3,sticky=N+S+W+E,padx=5)
         
         #右部分
-        self.redpic = PhotoImage(file="D:\\Npy\\2021.9\\redbutton.png")
-        self.redbutton = Button(image=self.redpic,command=self.Random_show)
+        self.redpic = PhotoImage(file="D:/Npy/Booktest/REDbtn.gif")
+        self.redbutton = Button(self,image=self.redpic,command=self.Random_show)
         self.redbutton.grid(row=1,column=1,padx=10)
-        self.bluepic = PhotoImage(file="D:\\Npy\\2021.9\\bluebutton.png")
-        self.bluebutton = Button(image=self.bluepic,command=self.saveAndclear)
+        self.bluepic = PhotoImage(file="D:/Npy/Booktest/BLUEbtn.gif")
+        self.bluebutton = Button(self,image=self.bluepic,command=self.saveAndclear)
         self.bluebutton.grid(row=3,column=1,padx=10)
 
     #随机抽取一个已有的句读
