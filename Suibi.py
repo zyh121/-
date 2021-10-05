@@ -241,7 +241,7 @@ class WriteWindow(Tk):
         #创建文字编辑区域
         self.scollbarN = Scrollbar(self.NoteF)
         self.scollbarN.grid(row=3,column=1,sticky=N+S+E+W,rowspan=3)
-        self.novel=Text(self.NoteF,undo=True,width=77,height=30,yscrollcommand=self.scollbarN.set,font=("Arial"))
+        self.novel=Text(self.NoteF,undo=True,width=60,height=25,yscrollcommand=self.scollbarN.set,font=("Arial"))
         self.novel.tag_configure("found",background = "yellow")
         self.novel.grid(row=3,column=0,sticky=W+N+S+E,padx=8,pady=3)
         self.novel.focus_set()
