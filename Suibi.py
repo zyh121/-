@@ -93,14 +93,28 @@ class WriteWindow(Tk):
         self.default_Cha()
         self.Show_CertainBook_Cha()
 
-    #为新书添加一个默认的Chapter
     def default_Cha(self):
+        """
+        为新书添加一个默认的Chapter
+        """
         #确定这本书之前是否进行过初始化
-        if not os.path.exists("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json"):
+        if self.class_name == '':
             try:
-                with open("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json",mode="w",encoding='UTF-8') as fd:
-                    defCha = [{"默认":"\n"}]
-                    json.dump(defCha,fd,ensure_ascii=False)
+                if os.path.exists("D:\\BookAttic\\"+self.book_name+".json"):
+                    if not os.path.getsize("D:\\BookAttic\\"+self.book_name+".json"):
+                        with open("D:\\BookAttic\\"+self.book_name+".json",mode="w",encoding='UTF-8') as fd:
+                            defCha = [{"默认":"\n"}]
+                            json.dump(defCha,fd,ensure_ascii=False)
+                            return
+            except:
+                showinfo("系统消息","初始化默认书摘出错！")
+        else:
+            try:
+                if os.path.exists("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json"):
+                    if not os.path.getsize("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json"):
+                        with open("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json",mode="w",encoding='UTF-8') as fd:
+                            defCha = [{"默认":"\n"}]
+                            json.dump(defCha,fd,ensure_ascii=False)
             except:
                 showinfo("系统消息","初始化默认书摘出错！")
 
@@ -178,14 +192,25 @@ class WriteWindow(Tk):
 
     #加载指定某一本书的所有章节并显示在Listbox
     def Show_CertainBook_Cha(self):
-        try:
-            with open("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json",mode="r",encoding='UTF-8') as fd:
-                thisbook = json.load(fd)
-        except json.decoder.JSONDecodeError:
-            return
-        finally:
-            fd.close()
+        if self.class_name == '':
+            try:
+                with open("D:\\BookAttic\\"+self.book_name+".json",mode="r",encoding='UTF-8') as f:
+                    thisbook = json.load(f)
+            except:
+                showinfo("系统消息","加载章节至Listbox时出错！")
+        else:
+            try:
+                with open("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json",mode="r",encoding='UTF-8') as fd:
+                    thisbook = json.load(fd)
+            except:
+                showinfo("系统消息","加载章节至Listbox时出错！")
+            finally:
+                fd.close()
+        #清空Listbox，防止堆叠相同内容
         self.lb.delete(0,END)
+        #清空列表，防止反复加入同一标题
+        self.book_chapter.clear()
+        #向列表和Listbox中插入内容
         for item in thisbook:
             self.book_chapter.append(str(item.keys())[12:-3])
         for cha in self.book_chapter:
@@ -251,6 +276,7 @@ class WriteWindow(Tk):
         self.OKbtn.grid(row=6,column=0,sticky=E,pady=3)
         self.newbtn = Button(self.toolbar,text="新建章节",command=self.create_text)
         self.newbtn.grid(row=1,column=6,pady=2,columnspan=2,padx=12)
+    
     """
     以下六个均为实现书摘功能的函数
     """
@@ -292,7 +318,7 @@ class WriteWindow(Tk):
 
     def create_text(self):
         """
-        所谓的“新建”只是清空了Text，其实质上由保存函数实现：新建则保存。
+        所谓的“新建”只是清空了Text，其实质上由保存函数实现：新建再保存。
         """
         #考虑Text中已有文本
         if self.novel.get("1.0",END) != '\n':
@@ -302,8 +328,10 @@ class WriteWindow(Tk):
                 self.attributes("-disabled",0)
                 self.ChapterE.delete(0,END)
                 self.novel.delete("1.0",END)
+                self.novel.focus_force()
             else:
                 self.attributes("-disabled",0)
+                self.novel.focus_force()
 
     #保存文本内容并刷新Listbox中的内容
     def Save(self):
@@ -315,6 +343,9 @@ class WriteWindow(Tk):
         if self.book_name == None:
             showinfo("╯▽╰","请在书架中选择书籍！")
             return
+        #第一次选择Chapter
+        if len(self.book_chapter) == 0:
+            self.Save_new()
         for name in self.book_chapter:
             #保存已有的chapter的修改
             if self.Cha_name == name:
@@ -331,14 +362,18 @@ class WriteWindow(Tk):
                     showinfo("系统消息","修改内容时出现异常!")
             #保存新的chapter
             else:
-                try:
-                    with open ("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json",mode="w",encoding='UTF-8') as fd:
-                        self.book_chaText.append({self.Cha_name:self.novel_text})
-                        json.dump(self.book_chaText,fd,ensure_ascii=False)
-                        self.Refresh()
-                except:
-                    showinfo("系统消息","保存文本时出现异常!")
-    #刷新界面
+                self.Save_new()
+
+    def Save_new(self):
+        try:
+            with open("D:\\BookAttic\\"+self.class_name+"\\"+self.book_name+".json", mode="w", encoding='UTF-8') as fd:
+                self.book_chaText.append({self.Cha_name: self.novel_text})
+                json.dump(self.book_chaText, fd, ensure_ascii=False)
+                self.Refresh()
+        except:
+                    showinfo("系统消息", "保存文本时出现异常!")
+
+    #刷新Text区域
     def Refresh(self):
         self.ChapterE.delete(0,END)
         self.novel.delete("1.0",END)
