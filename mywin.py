@@ -15,7 +15,7 @@ class MainWindow(Tk):
         self.title("书阁二楼")
         self.geometry("615x510+370+100")
         self.resizable(0,0)
-        self.iconbitmap('D:\\Npy\\Booktest\\favicon.ico')
+        self.iconbitmap('D:\\BookAttic\\favicon.ico')
         #全局变量
         self.Bookname = {}
         self.judou = list()
