@@ -12,7 +12,7 @@ class WriteWindow(Tk):
         self.title("记录随笔")
         self.geometry("1200x730")
         self.resizable(0,0)
-        self.iconbitmap('D:\\Npy\\Booktest\\favicon.ico')
+        self.iconbitmap('D:\\BookAttic\\favicon.ico')
         #全局变量
         self.book_name = None
         self.tree_index = dict()
